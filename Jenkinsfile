@@ -67,12 +67,7 @@ stages {
         
         steps {
             
-            sh '''
-
-                cd manifests/
-                kubectl apply -f .
-
-            '''
+            sh  'kubectl apply -f . '
                         
         } // steps deploy closed
          
