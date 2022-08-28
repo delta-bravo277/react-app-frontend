@@ -4,7 +4,7 @@ pipeline {
     
     environment {
   
-        DOCKERHUB_REPO='sanketlawande1/react-app'
+        DOCKERHUB_REPO='sanketlawande1/react-app-frontend'
 	    DOCKERHUB_CREDENTIALS=credentials('DOCKERHUB_CREDENTIALS')
 	    SECRET=credentials('SECRET')
     }
@@ -14,7 +14,7 @@ stages {
     
     stage("Git Checkout") {
 
-        steps { git branch: 'main', url: 'https://github.com/delta-bravo277/react-app' }
+        steps { git branch: 'main', url: 'https://github.com/delta-bravo277/react-app-frontend' }
         
     }
     
@@ -30,7 +30,7 @@ stages {
                  } // steps install-dependencies closed
     } // stage install-dependencies closed
     
-    stage('Dependencies Scanning and Fixing') {
+   /* stage('Dependencies Scanning and Fixing') {
         
        steps { 
         sh 'npm audit fix || true '
@@ -46,18 +46,16 @@ stages {
             reportName: 'NPM Audit Report'
             ]
        } // steps scanning closed
-    } // stage scanning closed
+    } // stage scanning closed */
     
     stage('Build , Sign and Publish an image') {
         
         steps {
             
             sh '''
-                docker build -t $DOCKERHUB_REPO:$BUILD_NUMBER .
+                docker build -t $DOCKERHUB_REPO:latest .
                 echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$SECRET
-                docker -D trust sign $DOCKERHUB_REPO:$BUILD_NUMBER
-                
+                docker push $DOCKERHUB_REPO:latest
                 '''
                         
         } // steps build and sign closed
