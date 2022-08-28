@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment                                          # 1
+metadata:
+  name: react-app
+  labels:
+    app: react-app
+spec:
+  selector:
+    matchLabels:
+      app: react-app
+  replicas: 2                                             # 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 3
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 4
+      maxSurge: 1                                         # 5
+  template:
+    metadata:
+      labels:
+        app: react-app                                # 6
+        app.kubernetes.io/name: react-app        # kyverno policy - 1
+        purpose: devsecops                      # kyverno policy - 5
+        namespace: devsecops-project            # kyverno policy - 2
+
+    spec:
+      containers:
+        - image: sanketlawande1/react-app-frontend:latest   # kyverno policy - 3
+          imagePullPolicy: IfNotPresent                         # 7
+          name: react-app
+          ports:
+            - containerPort: 6060
