@@ -62,6 +62,22 @@ stages {
          
     
     } //  stage build and sign closed
+
+    stage('Deploying to K8s') {
+        
+        steps {
+            
+            sh '''
+
+                cd manifests/
+                kubectl apply -f .
+
+            '''
+                        
+        } // steps deploy closed
+         
+    
+    } //  stage deploy closed
     
 } // stages closed
 
